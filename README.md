@@ -4,11 +4,9 @@ This repository contains the code and data for the paper:
 
 * Birkbeck, N., Cobzas, D., Jagersand, M. *Depth and Scene Flow from a Single Moving Camera*. International Symposium on 3D Data Processing, Visualization and Transmission (3DPVT) 2010. ([preprint](https://webdocs.cs.ualberta.ca/~dana/Papers/10_3dpvt_Birkbeck.pdf))
 
-Much of the code for our ICCV 2011 paper:
+Much of the code for our ICCV 2011 paper also lives in this repository:
 
 * N. Birkbeck, D. Cobzaş and M. Jägersand, *Basis constrained 3D scene flow on a dynamic proxy,* 2011 International Conference on Computer Vision, Barcelona, 2011, pp. 1967-1974 (https://ieeexplore.ieee.org/document/6126467).
-
-also lives in this repository.
 
 
 ## Directory structure
@@ -26,7 +24,7 @@ monoflow
 |  └utigl:       OpenGL utilities, fonts, windows, etc
 |  └packages
 |    └[tar.gz and third_party deps that must be installed]
-└-monoflow-data
+└-monoflow-data: [Download this separately, see below]
    └kpop:        Human face data set. Figures 9/10 in paper
    └armhouse5:   House and shirt dataset. Figures 7/8 in paper
    └plane_moving_camera: Dataset for Figure 4/Figure 5.
@@ -266,6 +264,74 @@ use the left-mouse button and click vertically at the top and scroll
 vertically to animate. Press 't' and 'l' to show the textures and
 disable lighting. Again, adjust the animation with the left mouse
 button.
+
+## Comparing results against ground truth
+
+In the cases that have ground truth data all the comparisons for metrics in 
+the paper are from the compare binary [compare.cc](src/contdepth/compare)
+
+```
+data_dir=$(pwd)/monoflow-data
+plane_dir=${data_dir}/plane_moving_camera
+bin_dir=$(pwd)/src/bazel-bin/contdepth
+(for i in 2 3 4 6 10; do 
+ dir=${plane_dir}/plane_$i; 
+ echo ${dir}; 
+ # Echo compare the scene flow results 
+ ${bin_dir}/compare ${dir}/seq/{0,1,2}/image-0000.png \
+    --flow=${dir}/results/sf-flow-%d.rfi \
+    --depth=${dir}/results/sf-depth-%d.rfi    
+ # Compare the displacement results 
+ ${bin_dir}/compare  --depth=${dir}/results/vari-depth-%d.rfi \
+  ${dir}/seq/{0,1,2}/image-0000.png
+done) > /tmp/plane_move_results.txt
+
+# The results for Table5 are extracted with
+grep "disp:" /tmp/plane_move_results.txt | perl -p -i -e ['s/disp:\[//g'] | gawk -F , '{if ((NR % 9) % 2 == 0 && (NR % 9) <= 6) print $1; if ((NR) % 9 == 0) print "---";}' > /tmp/plane_flow.txt
+grep "depth:" /tmp/plane_move_results.txt | perl -p -i -e 's/depth:\[//g' | gawk -F , '{print $1; if ((NR) % 6 == 0) print "---";}' > /tmp/plane_depth.txt
+
+# The results in /tmp/plane_depth.txt should be in groups of 6
+# with the first 3 entries of each group corresponding to the rows of
+# the "d" variable in src/contdepth/scripts/plane_move_camera.m
+# and the other 3 entries corresponding to the "v" variable.
+cat /tmp/plane_depth.txt
+
+# There are 5 groups of results in /tmp/plane_flow.txt, with the first
+# 3 entries corresponding to the "f" variable in 
+# src/contdepth/scripts/plane_move_camera.m
+cat /tmp/plane_flow.txt
+
+```
+
+## Executable listing
+
+* [discrete_main.cc](src/contdepth/discrete_main.cc): solve discrete depth formulation (used for initialization)
+* [main.cc](src/contdepth/main.cc): the main program for solving variational depth and flow.
+* [compare.cc](src/contdepth/compare.cc): utility for comparing against ground truth
+* [Visualize.cc](src/contdepth/Visualize.cc): utility for visualizing results
+
+There are several other executables in the [src/contdepth](src/contdepth) folder 
+that solve similar (more restricted or more general, like the ICCV paper) flow problems. The implementations
+will parallel the above binaries:
+
+* [CompareBasis.cc](src/contdepth/CompareBasis.cc): similar to "compare" but for the basis paper
+* [displace_uv.cc](src/contdepth/displace_uv.cc): use VariationalProblemUV and solve for texture flow (uv coords of mesh) on a base mesh
+* [displace_offset_basis.cc](src/contdepth/displace_offset_basis.cc): use VariationalBasisProblemUV and solve for basis flow on a mesh
+* [VisualizeBasis3D.cc](src/contdepth/VisualizeBasis3D.cc): utility for visualizing basis results
+
+And some others:
+
+* [AddNoise.cc](src/contdepth/AddNoise.cc): adds random noise to images
+* [Generate.cc](src/contdepth/Generate.cc): render a synthetic sequence from a given 
+  mesh, anim, and a sequence (for calibration
+* [GroundTruth.cc](src/contdepth/GroundTruth.cc): Compute ground truth flow/depth for a synthetic sequence
+* [GroundTruthBasis.cc](src/contdepth/GroundTruthBasis.cc): Compute ground truth flow/depth for a 
+synthetic sequence using the basis representation.
+* [OpticFlowCameras3D.cc](src/contdepth/OpticFlowCameras3D.cc): A solver that uses 
+the basis representation but solves on a canonical mesh (a plane in world space)
+* [RenderSequence.cc](src/contdepth/RenderSequence.cc): A utility for rendering results. 
+* [CosineFlow2D.cc](src/contdepth/CosineFlow2D.cc): This is a first implementation of basis flow (historical interest only)
+
 
 
 

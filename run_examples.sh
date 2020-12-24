@@ -11,8 +11,10 @@ script_dir=$(pwd)/src/contdepth/scripts
 # The data is too big to put in github. Grab if it doesn't exist.
 if [ ! -f monoflow-data.tar.gz ]; then
     echo Data file doesnt exist!
-    curl http://neilbirkbeck.com/files/monoflow-data.tar.gz -o monoflow-data.tar.gz
-    tar -xzf monoflow-data.tar.gz
+    echo You can download and install with:
+    echo curl http://neilbirkbeck.com/files/monoflow-data.tar.gz -o monoflow-data.tar.gz
+    echo tar -xzf monoflow-data.tar.gz
+    exit 1
 fi
 
 get_varying_baseline() {
@@ -23,7 +25,7 @@ get_varying_baseline() {
 
 cd $(pwd)/src/bazel-bin/contdepth
 
-# data_dir=${data_dir} sh ${script_dir}/rsphererend.sh
+data_dir=${data_dir} sh ${script_dir}/rsphererend.sh
 data_dir=${data_dir} sh ${script_dir}/kpop.sh
 data_dir=${data_dir} sh ${script_dir}/armhouse.sh
 
