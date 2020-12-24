@@ -217,6 +217,7 @@ public:
 
     case '0':
       drawMesh = (drawMesh + 1) % (meshes.size() + 1);
+      printf("DrawMesh: %d\n", drawMesh);
       break;
 
     case 'a':

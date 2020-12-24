@@ -1,4 +1,6 @@
-# Overview
+# Monoflow/contdepth source code
+
+![doc/overview.png](doc/overview.png)
 
 This repository contains the code and data for the paper:
 
@@ -199,8 +201,8 @@ for freetype2.pc is on your pkg-config path (e.g., on PKG_CONFIG_PATH).
 
 ## Running the examples / experiments from the paper.
 
-After successfully buildign the code, the top-level directory has a script that
- can be used to run the examples from the paper:
+After successfully building the code, the top-level directory has a script that
+ can be used to run the Toexamples from the paper:
 
 ``` 
 sh run_examples.sh
@@ -227,8 +229,21 @@ du-[0-3].png (the flow in the u direction), and similarly for v/w directions. Wh
 is ground truth available, there will be files *_truth.png that can be compared with
 the exported results. 
 
+There are also sf-%02d-%02d.png images that contain the results of warping
+adjacent temporal images to the reference view using the recovered model. E.g.,
+sf-01-00.png contains image 00 warped to 01 camera.
+
+For example, the results of the armhouse sequence would look like:
+
+![sf-01-00.png](results/armhouse5/debug/sf-01-00.png)
+![sf-01-01.png](results/armhouse5/debug/sf-01-01.png)
+![sf-01-02.png](results/armhouse5/debug/sf-01-02.png)
+
+
 The final results are stored in the *results* folder. It will contain .rfi (floating-point image files)
 for the depth and flow for each time instant.
+
+## Visualizing results
 
 The visualizations in the following videos:
 
@@ -239,13 +254,16 @@ The visualizations in the following videos:
 Came from the `Visualize` binary, which can be run with the following command:
 
 ```
-dir=$(pwd)monoflow-data/kpop
+dir=$(pwd)/monoflow-data/kpop
+# Need to run from src/contdepth to get the font
 cd src/contdepth
 ../bazel-bin/contdepth/Visualize ${dir}/seq/%d/image-0000.tga  \
-  ${dir}/seq/%d/calib.clb ${dir}/results/sf-depth-%d.rfi ${dir}/results/sf-flow-%d.rfi
+  ${dir}/seq/%d/calib.clb ${dir}/results/sf-depth-%d.rfi \
+  ${dir}/results/sf-flow-%d.rfi --n=3
 ```
 
 To explore the results you will need to get familiar with the hotkeys:
+
 * Navigation: the middle mouse button can be used to rotate. Translate with middle mouse and shift button. 
 And translate into the object with the right mouse button.
 * The keys '1', '2', '3' will adjust the density of the mesh. By default, the meshes from
@@ -264,6 +282,40 @@ use the left-mouse button and click vertically at the top and scroll
 vertically to animate. Press 't' and 'l' to show the textures and
 disable lighting. Again, adjust the animation with the left mouse
 button.
+
+E.g., after pressing 'a', the interface should look like:
+![visualize_kpop_shaded](doc/visualize_kpop_shaded.png)
+And then after pressing 't'/'l' and adjusting viewpoint:
+![visualize_kpop_shaded](doc/visualize_kpop_textured1.png)
+And then adjusting the time with the left mouse button and draggign at the top of the screen.
+Notice "Time: 0.00000" in the top-left:
+![visualize_kpop_shaded](doc/visualize_kpop_textured0.png)
+
+The examples in Figure 4 can be obtained through the following sequence of commands:
+
+```
+dir=$(pwd)/monoflow-data/plane_moving_camera/plane_10
+# Need to run from src/contdepth to get the font
+cd src/contdepth
+../bazel-bin/contdepth/Visualize ${dir}/seq/%d/image-0000.png \
+  ${dir}/seq/%d/calib.clb ${dir}/results/sf-depth-%d.rfi \
+  ${dir}/results/sf-flow-%d.rfi --n=3
+```
+
+
+* Press '1' to show a denser mesh.
+* Press 'C' to make the camera the same as at time 0.
+* Press ' ' to hide the flow vectors.
+* Press '0' to toggle through the reconstruction for time t=0, t=1, t=2 (press '0' 2 times)
+* Press '0' again (will show all meshes) and twice more to get back to t=1.
+* Press 'a' to turn on animation mode and use the left mouse button vertically 
+to move in time. By default the animation will round the time to get the interpolation base
+and then will use that to extrapolate with the flow. So the bottom part of Figure 4 came
+roughly from time t=0.5 and time t=1.5.
+
+Results should look like:
+![doc/armhouse_figure4_example.png](doc/armhouse_figure4_example.png)
+
 
 ## Comparing results against ground truth
 
