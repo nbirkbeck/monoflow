@@ -1,16 +1,32 @@
 
 # Delete old results with
-# find ~/data/contdepth -name results -exec rm -rfv {} \;
-# find ~/data/contdepth -name debug -exec rm -rfv {} \;
+# find monoflow-depth -name results -exec rm -rfv {} \;
+# find monoflow-depth -name debug -exec rm -rfv {} \;
 
 d=$(pwd)
 
-script_dir=$(pwd)/contdepth/scripts
-cd $(pwd)/bazel-bin/contdepth
+data_dir=$(pwd)/monoflow-data
+script_dir=$(pwd)/src/contdepth/scripts
 
-sh ${script_dir}/rsphererend.sh
-sh ${script_dir}/kpop.sh
-sh ${script_dir}/plane_moving_camera.sh
-sh ${script_dir}/armhouse.sh
+# The data is too big to put in github. Grab if it doesn't exist.
+if [ ! -f monoflow-data.tar.gz ]; then
+    echo Data file doesnt exist!
+    curl http://neilbirkbeck.com/files/monoflow-data.tar.gz -o monoflow-data.tar.gz
+    tar -xzf monoflow-data.tar.gz
+fi
+
+get_varying_baseline() {
+    for plane in 2 3 4 6 10; do 
+        sh ${script_dir}/plane_moving_camera.sh ${data_dir}/plane_moving_camera/plane_${plane}
+    done
+}
+
+cd $(pwd)/src/bazel-bin/contdepth
+
+# data_dir=${data_dir} sh ${script_dir}/rsphererend.sh
+data_dir=${data_dir} sh ${script_dir}/kpop.sh
+data_dir=${data_dir} sh ${script_dir}/armhouse.sh
+
+get_varying_baseline
 
 cd $d

@@ -1,7 +1,7 @@
 #
 # Script to compute the results for the cloth-rot sequence.
 #
-dir=${HOME}/data/contdepth/kpop
+dir=${data_dir}/kpop
 dmin=1.5
 dmax=3
 dimg=0.8

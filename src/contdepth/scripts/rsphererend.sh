@@ -1,7 +1,7 @@
 #
 # Script to compute the results for the rotating sphere
 #
-dir=/home/osboxes/data/contdepth/rsphererend
+dir=${data_dir}/rsphererend
 dmin=4
 dmax=7
 dimg=0.25

@@ -1,7 +1,7 @@
 #
 # Script to compute the results for the cloth-rot sequence.
 #
-dir=${HOME}/data/contdepth/armhouse5
+dir=${data_dir}/armhouse5
 dmin=2
 dmax=4.5
 dimg=0.3

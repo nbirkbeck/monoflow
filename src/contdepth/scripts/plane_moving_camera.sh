@@ -1,7 +1,7 @@
 #
 # Script to compute the results for the cloth-rot sequence.
 #
-dir=/tmp/plane_4
+dir=${data_dir}/plane_move_results/plane_4
 dmin=3.5
 dmax=5
 dimg=1.0
