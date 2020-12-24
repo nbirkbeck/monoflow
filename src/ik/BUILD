@@ -1,0 +1,27 @@
+cc_library(
+    name = "ikglobals",
+    srcs = [
+        "armature.cc",
+        "bone.cc",
+        "filters.cc",
+        "globals.cc",
+        "joint.cc",
+        "mesh.cc",
+        "quat_cons.cc",
+    ],
+    hdrs = [
+        "MeshMotionConstraint.h",
+        "armature.h",
+        "bone.h",
+        "defmodel.h",
+        "displace.h",
+        "filters.h",
+        "globals.h",
+        "joint.h",
+        "mesh.h",
+        "quat_cons.h",
+        "triangle.h",
+    ],
+    copts = ["-I/usr/include/lapack"],
+    visibility = ["//visibility:public"],
+)

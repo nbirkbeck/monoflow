@@ -1,0 +1,30 @@
+cc_library(
+    name = "MRF",
+    srcs =
+        [
+            "BP-S.cpp",
+            "GCoptimization.cpp",
+            "ICM.cpp",
+            "LinkedBlockList.cpp",
+            "MaxProdBP.cpp",
+            "TRW-S.cpp",
+            "mrf.cpp",
+            "regions-maxprod.cpp",
+        ],
+    hdrs = [
+        "BP-S.h",
+        "GCoptimization.h",
+        "ICM.h",
+        "LinkedBlockList.h",
+        "MaxProdBP.h",
+        "TRW-S.h",
+        "block.h",
+        "energy.h",
+        "graph.h",
+        "mrf.h",
+        "regions-new.h",
+        "typeTruncatedQuadratic2D.h",
+    ],
+    copts = ["-fpermissive"],
+    visibility = ["//visibility:public"],
+)

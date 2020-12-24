@@ -1,0 +1,3 @@
+These are all of the dependencies required to get the contdepth (monoflow) binaries build.
+
+See the configure.log for how they were configured on this machine. These must be installed (make install).
