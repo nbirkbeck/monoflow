@@ -256,7 +256,18 @@ all time instants are shown. Press '0' to show only one mesh.
 * 't' Toggles the texture maps
 * ' ' Toggles the display of the motion vectors
 
-For example, open up the visualization and position the results using the mouse.
-a
+For example, open up the visualization and position the results using the mouse. 
+Press 'a' to stop showing all meshes and use the left mouse button 
+ and click at the top of the screen and drag mouse up and down. This change the time
+of the animation but will still show the motion vectors. This allows
+you to see the results at each time instant. Press ' ' to turn off the motion
+vectors and allow animation of the mesh with interpolation. Again, 
+use the left-mouse button and click vertically at the top and scroll
+vertically to animate. Press 't' and 'l' to show the textures and
+disable lighting. Again, adjust the animation with the left mouse
+button.
+
+
+
 
 
